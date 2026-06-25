@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم | JSH Store</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Cairo', 'sans-serif'] },
+                    colors: {
+                        brand: { dark: '#050507', card: '#0f1016', cyan: '#06b6d4', amber: '#f59e0b' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #050507; color: #e2e8f0; }
+        .glass-card {
+            background: rgba(15, 16, 22, 0.7); backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .btn-primary { background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%); }
+        .btn-primary:hover { box-shadow: 0 0 25px rgba(6, 182, 212, 0.4); }
+        .nav-btn.active { background: rgba(6, 182, 212, 0.2); color: #06b6d4; }
+    </style>
+</head>
+<body class="antialiased">
+    <!-- Login Screen -->
+    <div id="login-screen" class="min-h-screen flex items-center justify-center p-4">
+        <div class="glass-card rounded-3xl p-8 w-full max-w-md">
+            <div class="text-center mb-8">
+                <div class="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-brand-cyan to-brand-amber flex items-center justify-center mb-4">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                </div>
+                <h1 class="text-2xl font-bold text-white">لوحة التحكم</h1>
+                <p class="text-gray-400 text-sm mt-2">JSH Store Admin</p>
+            </div>
+            <form id="login-form" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-2">رقم الهاتف</label>
+                    <input type="tel" id="phone" required class="w-full bg-brand-dark border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-brand-cyan" placeholder="01001234567">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-2">كلمة المرور</label>
+                    <input type="password" id="password" required class="w-full bg-brand-dark border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-brand-cyan">
+                </div>
+                <button type="submit" class="w-full btn-primary text-white font-bold py-3 rounded-xl">دخول</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div id="admin-dashboard" class="hidden">
+        <!-- Sidebar -->
+        <div class="fixed right-0 top-0 h-full w-64 bg-brand-card border-l border-white/10 p-6 overflow-y-auto">
+            <div class="flex items-center gap-3 mb-8">
+                <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-brand-cyan to-brand-amber flex items-center justify-center">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                </div>
+                <span class="text-xl font-bold text-white">JSH Admin</span>
+            </div>
+            <nav class="space-y-2">
+                <button onclick="showSection('stats')" class="nav-btn w-full text-right px-4 py-3 rounded-xl text-gray-300 hover:bg-white/5 hover:text-white transition-all flex items-center gap-3">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                    الإحصائيات
+                </button>
+                <button onclick="showSection('products')" class="nav-btn w-full text-right px-4 py-3 rounded-xl text-gray-300 hover:bg-white/5 hover:text-white transition-all flex items-center gap-3">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+                    المنتجات
+                </button>
+                <button onclick="showSection('orders')" class="nav-btn w-full text-right px-4 py-3 rounded-xl text-gray-300 hover:bg-white/5 hover:text-white transition-all flex items-center gap-3">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+                    الطلبات
+                </button>
+                <button onclick="showSection('evaluations')" class="nav-btn w-full text-right px-4 py-3 rounded-xl text-gray-300 hover:bg-white/5 hover:text-white transition-all flex items-center gap-3">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path></svg>
+                    تقييمات الهواتف
+                </button>
+                <button onclick="showSection('settings')" class="nav-btn w-full text-right px-4 py-3 rounded-xl text-gray-300 hover:bg-white/5 hover:text-white transition-all flex items-center gap-3">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    الإعدادات
+                </button>
+                <a href="/" class="w-full text-right px-4 py-3 rounded-xl text-gray-300 hover:bg-white/5 hover:text-white transition-all flex items-center gap-3">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                    العودة للموقع
+                </a>
+                <button onclick="logout()" class="w-full text-right px-4 py-3 rounded-xl text-red-400 hover:bg-red-500/10 transition-all flex items-center gap-3">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                    تسجيل الخروج
+                </button>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="mr-64 p-8">
+            <!-- Stats Section -->
+            <div id="section-stats" class="admin-section">
+                <h2 class="text-3xl font-bold text-white mb-8">الإحصائيات</h2>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div class="glass-card rounded-2xl p-6">
+                        <div class="text-brand-cyan text-4xl font-black" id="stat-products">0</div>
+                        <div class="text-gray-400 mt-2">إجمالي المنتجات</div>
+                    </div>
+                    <div class="glass-card rounded-2xl p-6">
+                        <div class="text-brand-amber text-4xl font-black" id="stat-orders">0</div>
+                        <div class="text-gray-400 mt-2">إجمالي الطلبات</div>
+                    </div>
+                    <div class="glass-card rounded-2xl p-6">
+                        <div class="text-purple-400 text-4xl font-black" id="stat-pending">0</div>
+                        <div class="text-gray-400 mt-2">طلبات معلقة</div>
+                    </div>
+                    <div class="glass-card rounded-2xl p-6">
+                        <div class="text-green-400 text-4xl font-black" id="stat-evaluations">0</div>
+                        <div class="text-gray-400 mt-2">تقييمات الهواتف</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Products Section -->
+            <div id="section-products" class="admin-section hidden">
+                <div class="flex items-center justify-between mb-8">
+                    <h2 class="text-3xl font-bold text-white">إدارة المنتجات</h2>
+                    <button onclick="openProductModal()" class="btn-primary text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                        إضافة منتج
+                    </button>
+                </div>
+                <div id="products-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+            </div>
+
+            <!-- Orders Section -->
+            <div id="section-orders" class="admin-section hidden">
+                <h2 class="text-3xl font-bold text-white mb-8">إدارة الطلبات</h2>
+                <div id="orders-list" class="space-y-4"></div>
+            </div>
+
+            <!-- Evaluations Section -->
+            <div id="section-evaluations" class="admin-section hidden">
+                <h2 class="text-3xl font-bold text-white mb-8">تقييمات الهواتف القديمة</h2>
+                <div id="evaluations-list" class="space-y-4"></div>
+            </div>
+
+            <!-- Settings Section -->
+            <div id="section-settings" class="admin-section hidden">
+                <h2 class="text-3xl font-bold text-white mb-8">الإعدادات</h2>
+                
+                <!-- Store Info -->
+                <div class="glass-card rounded-2xl p-6 mb-6">
+                    <h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                        <svg class="w-6 h-6 text-brand-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        معلومات المتجر
+                    </h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-2">اسم المتجر</label>
+                            <input type="text" id="setting-store-name" class="w-full bg-brand-dark border border-white/10 rounded-xl px-4 py-3 text-white">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-2">رقم واتساب (بدون + أو 00)</label>
+                            <input type="text" id="setting-whatsapp" class="w-full bg-brand-dark border border-white/10 rounded-xl px-4 py-3 text-white" placeholder="201001234567">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-2">رقم الهاتف المعروض</label>
+                            <input type="text" id="setting-phone" class="w-full bg-brand-dark border border-white/10 rounded-xl px-4 py-3 text-white">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-2">الموقع</label>
+                            <input type="text" id="setting-location" class="w-full bg-brand-dark border border-white/10 rounded-xl px-4 py-3 text-white">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Methods -->
+                <div class="glass-card rounded-2xl p-6 mb-6">
+                    <h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                        <svg class="w-6 h-6 text-brand-amber" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
+                        طرق الدفع المتاحة
+                    </h3>
+                    <div class="space-y-4">
+                        <!-- Visa -->
+                        <div class="border border-white/10 rounded-xl p-4">
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="flex items-center gap-3">
+                                    <svg class="w-8 h-8 text-blue-400" fill="currentColor" viewBox="0 0 24 24"><path d="M10.925 14.3l.7-4.3h-2.1l-1.3 4.3h2.7zm6.6-4.2c-.3-.1-.8-.3-1.4-.3-1.5 0-2.6.8-2.6 1.9 0 .8.8 1.3 1.3 1.6.6.3.8.5.8.7 0 .4-.5.6-1 .6-.7 0-1.1-.1-1.7-.4l-.2-.1-.3 1.8c.4.2 1.2.4 2 .4 1.6 0 2.7-.8 2.7-2 0-.7-.4-1.2-1.3-1.6-.5-.3-.9-.5-.9-.7 0-.2.3-.5.9-.5.6 0 1 .1 1.3.3l.2.1.2-1.8zm3.6-.1h-1.7c-.5 0-.9.1-1.1.7l-3.1 7.3h2.2l.4-1.2h2.7l.3 1.2h1.9l-1.6-8zm-2.5 5.2l1-2.7.6 2.7h-1.6zM6.5 10l-2.1 5.6-.2-1.1c-.4-1.3-1.6-2.7-3-3.4l2 7h2.2l3.3-8.1h-2.2z"/></svg>
+                                    <span class="text-white font-bold">فيزا / ماستركارد</span>
+                                </div>
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input type="checkbox" id="setting-visa-enabled" class="w-5 h-5 rounded">
+                                    <span class="text-gray-400 text-sm">مفعّل</span>
+                                </label>
+                            </div>
+                            <input type="text" id="setting-visa-number" class="w-full bg-brand-dark border border-white/10 rounded-xl px-4 py-3 text-white" placeholder="رقم البطاقة أو رابط الدفع">
+                        </div>
+
+                        <!-- Vodafone Cash -->
+                        <div class="border border-white/10 rounded-xl p-4">
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="flex items-center gap-3">
+                                    <svg class="w-8 h-8 text-red-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                                    <span class="text-white font-bold">فودافون كاش</span>
+                                </div>
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input type="checkbox" id="setting-vodafone-enabled" class="w-5 h-5 rounded">
+                                    <span class="text-gray-400 text-sm">مفعّل</span>
+                                </label>
+                            </div>
+                            <input type="text" id="setting-vodafone-number" class="w-full bg-brand-dark border border-white/10 rounded-xl px-4 py-3 text-white" placeholder="رقم المحفظة">
+                        </div>
+
+                        <!-- Cash on Delivery -->
+                        <div class="border border-white/10 rounded-xl p-4">
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="flex items-center gap-3">
+                                    <svg class="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                                    <span class="text-white font-bold">الدفع عند الاستلام</span>
+                                </div>
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input type="checkbox" id="setting-cod-enabled" class="w-5 h-5 rounded">
+                                    <span class="text-gray-400 text-sm">مفعّل</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Appearance -->
+                <div class="glass-card rounded-2xl p-6 mb-6">
+                    <h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                        <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"></path></svg>
+                        المظهر والألوان
+                    </h3>
+                    <div class="grid md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-2">اللون الأساسي</label>
+                            <input type="color" id="setting-primary-color" class="w-full h-12 rounded-xl cursor-pointer">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-2">اللون الثانوي</label>
+                            <input type="color" id="setting-secondary-color" class="w-full h-12 rounded-xl cursor-pointer">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-2">نوع الخط</label>
+                            <select id="setting-font" class="w-full bg-brand-dark border border-white/10 rounded-xl px-4 py-3 text-white">
+                                <option value="Cairo">Cairo</option>
+                                <option value="Tajawal">Tajawal</option>
+                                <option value="Almarai">Almarai</option>
+                                <option value="IBM Plex Sans Arabic">IBM Plex Sans Arabic</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Change Password -->
+                <div class="glass-card rounded-2xl p-6">
+                    <h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                        <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                        تغيير كلمة المرور
+                    </h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-2">كلمة المرور الحالية</label>
+                            <input type="password" id="current-password" class="w-full bg-brand-dark border border-white/10 rounded-xl px-4 py-3 text-white">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-2">كلمة المرور الجديدة</label>
+                            <input type="password" id="new-password" class="w-full bg-brand-dark border border-white/10 rounded-xl px-4 py-3 text-white">
+                        </div>
+                    </div>
+                    <button onclick="changePassword()" class="mt-4 bg-red-500/20 text-red-400 px-6 py-2 rounded-xl hover:bg-red-500/30 transition-all">تغيير كلمة المرور</button>
+                </div>
+
+                <!-- Save Button -->
+                <button onclick="saveSettings()" class="mt-6 w-full btn-primary text-white font-bold py-4 rounded-xl text-lg shadow-lg shadow-brand-cyan/30">
+                    حفظ جميع الإعدادات
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Modal -->
+    <div id="product-modal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black/80" onclick="closeProductModal()"></div>
+        <div class="absolute inset-0 flex items-center justify-center p-4">
+            <div class="bg-brand-card border border-white/10 rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+                <div class="p-8">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-2xl font-bold text-white" id="product-modal-title">إضافة منتج جديد</h3>
+                        <button onclick="closeProductModal()" class="text-gray-400 hover:text-white">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                        </button>
+                    </div>
+                    <form id="product-form" class="space-y-4">
+                        <input type="hidden" id="product-id">
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-400 mb-2">اسم المنتج</label>
+                                <input type="text" id="product-name" required class="w-full bg-brand-dark border border-white/10 rounded-xl px-4 py-3 text-white">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-400 mb-2">الماركة</label>
+                                <select id="product-brand" class="w-full bg-brand-dark border border-white/10 rounded-xl px-4 py-3 text-white">
+                                    <option value="apple">Apple</option>
+                                    <option value="samsung">Samsung</option>
+                                    <option value="xiaomi">Xiaomi</option>
+                                    <option value="huawei">Huawei</option>
+                                    <option value="redmagic">Red Magic</option>
+                                    <option value="tecno">Tecno</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-2">المواصفات</label>
+                            <input type="text" id="product-specs" class="w-full bg-brand-dark border border-white/10 rounded-xl px-4 py-3 text-white" placeholder="256GB - تيتانيوم">
+                        </div>
+                        <div class="grid md:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-400 mb-2">السعر (ج.م)</label>
+                                <input type="text" id="product-price" required class="w-full bg-brand-dark border border-white/10 rounded-xl px-4 py-3 text-white">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-400 mb-2">المخزون</label>
+                                <input type="number" id="product-stock" value="10" class="w-full bg-brand-dark border border-white/10 rounded-xl px-4 py-3 text-white">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-400 mb-2">خصم %</label>
+                                <input type="number" id="product-discount" value="0" class="w-full bg-brand-dark border border-white/10 rounded-xl px-4 py-3 text-white">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-2">رابط الصورة (Unsplash)</label>
+                            <input type="text" id="product-image" class="w-full bg-brand-dark border border-white/10 rounded-xl px-4 py-3 text-white" placeholder="photo-xxxxx">
+                        </div>
+                        <button type="submit" class="w-full btn-primary text-white font-bold py-3 rounded-xl">حفظ المنتج</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let isAdmin = false;
+        let currentSettings = {};
+
+        // Check auth status
+        async function checkAuth() {
+            const res = await fetch('/api/admin/status');
+            const data = await res.json();
+            if (data.isAdmin) {
+                isAdmin = true;
+                showDashboard();
+            }
+        }
+
+        // Login
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const phone = document.getElementById('phone').value;
+            const password = document.getElementById('password').value;
+
+            const res = await fetch('/api/admin/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ phone, password })
+            });
+
+            if (res.ok) {
+                isAdmin = true;
+                showDashboard();
+            } else {
+                alert('بيانات الدخول غير صحيحة');
+            }
+        });
+
+        // Logout
+        async function logout() {
+            await fetch('/api/admin/logout', { method: 'POST' });
+            isAdmin = false;
+            document.getElementById('admin-dashboard').classList.add('hidden');
+            document.getElementById('login-screen').classList.remove('hidden');
+        }
+
+        // Show dashboard
+        function showDashboard() {
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('admin-dashboard').classList.remove('hidden');
+            loadStats();
+            showSection('stats');
+        }
+
+        // Show section
+        function showSection(section) {
+            document.querySelectorAll('.admin-section').forEach(s => s.classList.add('hidden'));
+            document.getElementById(`section-${section}`).classList.remove('hidden');
+            
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            event?.target?.closest('.nav-btn')?.classList.add('active');
+
+            if (section === 'stats') loadStats();
+            if (section === 'products') loadProducts();
+            if (section === 'orders') loadOrders();
+            if (section === 'evaluations') loadEvaluations();
+            if (section === 'settings') loadSettings();
+        }
+
+        // Load stats
+        async function loadStats() {
+            const res = await fetch('/api/admin/stats');
+            const data = await res.json();
+            document.getElementById('stat-products').textContent = data.totalProducts;
+            document.getElementById('stat-orders').textContent = data.totalOrders;
+            document.getElementById('stat-pending').textContent = data.pendingOrders;
+            document.getElementById('stat-evaluations').textContent = data.totalEvaluations;
+        }
+
+        // Load settings
+        async function loadSettings() {
+            const res = await fetch('/api/admin/settings');
+            currentSettings = await res.json();
+            
+            document.getElementById('setting-store-name').value = currentSettings.store_name || '';
+            document.getElementById('setting-whatsapp').value = currentSettings.whatsapp_number || '';
+            document.getElementById('setting-phone').value = currentSettings.store_phone || '';
+            document.getElementById('setting-location').value = currentSettings.store_location || '';
+            
+            document.getElementById('setting-visa-enabled').checked = currentSettings.payment_visa_enabled === '1';
+            document.getElementById('setting-visa-number').value = currentSettings.payment_visa_number || '';
+            document.getElementById('setting-vodafone-enabled').checked = currentSettings.payment_vodafone_enabled === '1';
+            document.getElementById('setting-vodafone-number').value = currentSettings.payment_vodafone_number || '';
+            document.getElementById('setting-cod-enabled').checked = currentSettings.payment_cod_enabled === '1';
+            
+            document.getElementById('setting-primary-color').value = currentSettings.primary_color || '#06b6d4';
+            document.getElementById('setting-secondary-color').value = currentSettings.secondary_color || '#f59e0b';
+            document.getElementById('setting-font').value = currentSettings.font_family || 'Cairo';
+        }
+
+        // Save settings
+        async function saveSettings() {
+            const settings = {
+                store_name: document.getElementById('setting-store-name').value,
+                whatsapp_number: document.getElementById('setting-whatsapp').value,
+                store_phone: document.getElementById('setting-phone').value,
+                store_location: document.getElementById('setting-location').value,
+                payment_visa_enabled: document.getElementById('setting-visa-enabled').checked ? '1' : '0',
+                payment_visa_number: document.getElementById('setting-visa-number').value,
+                payment_vodafone_enabled: document.getElementById('setting-vodafone-enabled').checked ? '1' : '0',
+                payment_vodafone_number: document.getElementById('setting-vodafone-number').value,
+                payment_cod_enabled: document.getElementById('setting-cod-enabled').checked ? '1' : '0',
+                primary_color: document.getElementById('setting-primary-color').value,
+                secondary_color: document.getElementById('setting-secondary-color').value,
+                font_family: document.getElementById('setting-font').value
+            };
+
+            const res = await fetch('/api/admin/settings', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(settings)
+            });
+
+            if (res.ok) {
+                alert('تم حفظ الإعدادات بنجاح!');
+            } else {
+                alert('حدث خطأ أثناء حفظ الإعدادات');
+            }
+        }
+
+        // Change password
+        async function changePassword() {
+            const currentPassword = document.getElementById('current-password').value;
+            const newPassword = document.getElementById('new-password').value;
+
+            if (!currentPassword || !newPassword) {
+                alert('يرجى ملء جميع الحقول');
+                return;
+            }
+
+            const res = await fetch('/api/admin/change-password', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ currentPassword, newPassword })
+            });
+
+            if (res.ok) {
+                alert('تم تغيير كلمة المرور بنجاح');
+                document.getElementById('current-password').value = '';
+                document.getElementById('new-password').value = '';
+            } else {
+                const data = await res.json();
+                alert(data.error || 'حدث خطأ');
+            }
+        }
+
+        // Load products
+        async function loadProducts() {
+            const res = await fetch('/api/admin/products');
+            const products = await res.json();
+            const container = document.getElementById('products-list');
+            
+            container.innerHTML = products.map(p => `
+                <div class="glass-card rounded-2xl overflow-hidden">
+                    <img src="${p.image.startsWith('http') ? p.image : 'https://images.unsplash.com/' + p.image}" class="w-full h-48 object-cover">
+                    <div class="p-4">
+                        <h4 class="text-white font-bold">${p.name}</h4>
+                        <p class="text-gray-400 text-sm">${p.specs}</p>
+                        <div class="flex items-center justify-between mt-3">
+                            <span class="text-brand-cyan font-bold">${p.price} ج.م</span>
+                            <span class="text-gray-400 text-sm">المخزون: ${p.stock}</span>
+                        </div>
+                        <div class="flex gap-2 mt-4">
+                            <button onclick="editProduct(${p.id})" class="flex-1 bg-brand-cyan/20 text-brand-cyan py-2 rounded-lg hover:bg-brand-cyan/30 transition-all">تعديل</button>
+                            <button onclick="deleteProduct(${p.id})" class="flex-1 bg-red-500/20 text-red-400 py-2 rounded-lg hover:bg-red-500/30 transition-all">حذف</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Load orders
+        async function loadOrders() {
+            const res = await fetch('/api/admin/orders');
+            const orders = await res.json();
+            const container = document.getElementById('orders-list');
+            
+            container.innerHTML = orders.map(o => `
+                <div class="glass-card rounded-2xl p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h4 class="text-white font-bold text-lg">${o.customer_name}</h4>
+                            <p class="text-gray-400 text-sm">${o.customer_phone} - ${o.customer_governorate}</p>
+                        </div>
+                        <span class="px-3 py-1 rounded-full text-sm font-bold ${o.status === 'pending' ? 'bg-amber-500/20 text-amber-400' : o.status === 'completed' ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}">
+                            ${o.status === 'pending' ? 'معلق' : o.status === 'completed' ? 'مكتمل' : 'ملغي'}
+                        </span>
+                    </div>
+                    <div class="text-gray-300 text-sm mb-4">
+                        <p>الإجمالي: <span class="text-brand-cyan font-bold">${o.total_price}</span></p>
+                        <p>طريقة الدفع: ${o.payment_method === 'visa' ? 'فيزا' : o.payment_method === 'vodafone' ? 'فودافون كاش' : 'عند الاستلام'}</p>
+                        ${o.notes ? `<p>ملاحظات: ${o.notes}</p>` : ''}
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="updateOrderStatus(${o.id}, 'completed')" class="flex-1 bg-green-500/20 text-green-400 py-2 rounded-lg hover:bg-green-500/30">إكمال</button>
+                        <button onclick="updateOrderStatus(${o.id}, 'cancelled')" class="flex-1 bg-red-500/20 text-red-400 py-2 rounded-lg hover:bg-red-500/30">إلغاء</button>
+                        <button onclick="deleteOrder(${o.id})" class="flex-1 bg-gray-500/20 text-gray-400 py-2 rounded-lg hover:bg-gray-500/30">حذف</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Load evaluations
+        async function loadEvaluations() {
+            const res = await fetch('/api/admin/evaluations');
+            const evaluations = await res.json();
+            const container = document.getElementById('evaluations-list');
+            
+            container.innerHTML = evaluations.map(e => `
+                <div class="glass-card rounded-2xl p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h4 class="text-white font-bold text-lg">${e.brand} ${e.model}</h4>
+                        <span class="px-3 py-1 rounded-full text-sm font-bold ${e.status === 'pending' ? 'bg-amber-500/20 text-amber-400' : 'bg-green-500/20 text-green-400'}">
+                            ${e.status === 'pending' ? 'معلق' : 'تم الرد'}
+                        </span>
+                    </div>
+                    <div class="text-gray-300 text-sm space-y-1">
+                        <p>الهاتف: ${e.phone_number}</p>
+                        <p>حالة الشاشة: ${e.screen_condition || 'غير محدد'}</p>
+                        <p>حالة البطارية: ${e.battery_condition || 'غير محدد'}</p>
+                    </div>
+                    <div class="flex gap-2 mt-4">
+                        <button onclick="updateEvaluationStatus(${e.id}, 'completed')" class="flex-1 bg-green-500/20 text-green-400 py-2 rounded-lg hover:bg-green-500/30">تم الرد</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Product modal
+        function openProductModal(product = null) {
+            document.getElementById('product-modal').classList.remove('hidden');
+            document.getElementById('product-form').reset();
+            document.getElementById('product-id').value = '';
+            document.getElementById('product-modal-title').textContent = product ? 'تعديل المنتج' : 'إضافة منتج جديد';
+            
+            if (product) {
+                document.getElementById('product-id').value = product.id;
+                document.getElementById('product-name').value = product.name;
+                document.getElementById('product-brand').value = product.brand;
+                document.getElementById('product-specs').value = product.specs;
+                document.getElementById('product-price').value = product.price;
+                document.getElementById('product-stock').value = product.stock;
+                document.getElementById('product-discount').value = product.discount;
+                document.getElementById('product-image').value = product.image;
+            }
+        }
+
+        function closeProductModal() {
+            document.getElementById('product-modal').classList.add('hidden');
+        }
+
+        async function editProduct(id) {
+            const res = await fetch(`/api/products/${id}`);
+            const product = await res.json();
+            openProductModal(product);
+        }
+
+        async function deleteProduct(id) {
+            if (!confirm('هل أنت متأكد من حذف هذا المنتج؟')) return;
+            await fetch(`/api/admin/products/${id}`, { method: 'DELETE' });
+            loadProducts();
+        }
+
+        // Product form submit
+        document.getElementById('product-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('product-id').value;
+            const data = {
+                name: document.getElementById('product-name').value,
+                brand: document.getElementById('product-brand').value,
+                specs: document.getElementById('product-specs').value,
+                price: document.getElementById('product-price').value,
+                stock: document.getElementById('product-stock').value,
+                discount: document.getElementById('product-discount').value,
+                image: document.getElementById('product-image').value
+            };
+
+            const url = id ? `/api/admin/products/${id}` : '/api/admin/products';
+            const method = id ? 'PUT' : 'POST';
+
+            await fetch(url, {
+                method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            closeProductModal();
+            loadProducts();
+        });
+
+        // Order management
+        async function updateOrderStatus(id, status) {
+            await fetch(`/api/admin/orders/${id}/status`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status })
+            });
+            loadOrders();
+        }
+
+        async function deleteOrder(id) {
+            if (!confirm('هل أنت متأكد من حذف هذا الطلب؟')) return;
+            await fetch(`/api/admin/orders/${id}`, { method: 'DELETE' });
+            loadOrders();
+        }
+
+        async function updateEvaluationStatus(id, status) {
+            await fetch(`/api/admin/evaluations/${id}/status`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status })
+            });
+            loadEvaluations();
+        }
+
+        // Initialize
+        checkAuth();
+    </script>
+</body>
+</html>
